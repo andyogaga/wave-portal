@@ -1,16 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Home from "./Home";
 import {
   getCaptions,
-  getCaptionByTagId,
   clearCaptions
 } from "../../store/actions/caption.actions";
 import { func, array } from "prop-types";
 
 const HomeContainer = props => {
   const {
-    getCaptionByTagId,
     activeCaptions,
     activeTags,
     clearCaptions
@@ -22,17 +20,55 @@ const HomeContainer = props => {
     };
   }, [clearCaptions]);
 
-  const getSearchedCaptions = cb => {
-    // Choose a random number from 1 to 10
-    const randomId = Math.floor(Math.random() * 9) + 1;
-    getCaptionByTagId(randomId, cb);
-  };
+  const [currentAccount, setCurrentAccount] = useState("");
+
+  const checkIfWalletIsConnected = async () => {
+    try {
+      const { ethereum } = window;
+      if (!window.ethereum) {
+        console.log("Make sure you have metamask!");
+      } else {
+        console.log("We have the ethereum object");
+      }
+
+      const accounts = await ethereum.request({ method: "eth_accounts" });
+
+      if (accounts.length !== 0) {
+        console.log("Found an authorized account:", accounts[0]);
+        setCurrentAccount(accounts[0])
+      } else {
+        console.log("No authorized account found")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const connectWallet = async () => {
+    try {
+      const { ethereum } = window;
+      if (!ethereum) {
+        alert("Please install metamask");
+        return;
+      }
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+      console.log("Connected to: ", accounts[0]);
+      setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    checkIfWalletIsConnected()
+  }, []);
 
   return (
     <Home
       captions={activeCaptions}
       activeTags={activeTags}
-      getSearchedCaptions={getSearchedCaptions}
+      connectWallet={connectWallet}
+      currentAccount={currentAccount}
     />
   );
 };
@@ -51,7 +87,6 @@ HomeContainer.defaultProps = {
 
 HomeContainer.propTypes = {
   getCaptions: func,
-  getCaptionByTagId: func,
   clearCaptions: func,
   activeCaptions: array,
   activeTags: array
@@ -59,6 +94,5 @@ HomeContainer.propTypes = {
 
 export default connect(mapStateToProps, {
   getCaptions,
-  getCaptionByTagId,
   clearCaptions
 })(HomeContainer);

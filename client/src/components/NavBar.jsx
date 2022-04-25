@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/icons/caption-logo.svg";
 import { ReactComponent as HamburgerMenu } from "../assets/icons/menu.svg";
 import { breakpoints, PRI_COLOR, PRI_COLOR_FADED } from "../utils/constants";
+import { getTotalWaves } from "../store/actions/caption.actions";
 
 const Navbar = styled.div`
   width: 100%;
@@ -113,6 +114,29 @@ const Link = styled(NavLink)`
   }
 `;
 
+const BTN = styled.button`
+  align-items: center;
+  align-self: center;
+  border-radius: 10px 10px 0 0;
+  color: #000;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 300;
+  height: 100%;
+  margin: 2px 6px 2px 12px;
+  outline: 0;
+  padding: 0 0.7em;
+  user-select: none;
+  text-decoration: none;
+  background-color: ${PRI_COLOR};
+  color: #fff;
+
+
+  @media screen and (min-width: 756px) {
+    display: inline-flex;
+  }
+`
+
 const MENU = styled(HamburgerMenu)`
   width: 2.5rem;
   height: 2.5rem;
@@ -124,11 +148,27 @@ const LOGO = styled(Logo)`
   height: 4rem;
 `
 
-const NavBar = () => {
+const NavBar = ({ connectWallet, currentAccount }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [totalWaves, setTotalWaves] = useState("0");
   const handleMobileMenuClick = () => {
     setMenuOpen(!menuOpen)
   }
+
+  const waveCount = async () => {
+    try {
+      const waves = await getTotalWaves();
+      setTotalWaves(waves);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    waveCount()
+  }, [])
+
+
   return (
     <Navbar>
       <LogoContainer>
@@ -146,6 +186,15 @@ const NavBar = () => {
         <Link exact activeClassName="active" to="/">
           Home
         </Link>
+        {
+          !currentAccount ? (
+            <BTN onClick={connectWallet}>
+              Connect Wallet
+            </BTN>
+          ) : <BTN onClick={() => waveCount()} >
+            Total Waves: {totalWaves}
+          </BTN>
+        }
       </MenuContainer>
     </Navbar>
   );

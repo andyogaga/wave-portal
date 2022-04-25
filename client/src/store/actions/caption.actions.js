@@ -1,104 +1,53 @@
+import { ethers } from "ethers";
 import { callApi } from "../../utils"
-import {CREATE_CAPTION, GET_CAPTIONS, ADD_TAG, ADD_CAPTIONS, CLEAR_CAPTIONS} from '../../utils/constants'
+import { GET_CAPTIONS, CLEAR_CAPTIONS } from '../../utils/constants'
+import abi from "../../utils/WavePortal.json";
 
-export const createCaption = (caption, tags, cb) => async dispatch => {
+const contractAddress = "0x39C50D5EF33b0871048a62a9FAa0aFF8F6c2fcA1";
+
+export const getTotalWaves = async (cb) => {
   try {
-    let res;
-    if(Array.isArray(tags) && tags.length){
-      res = await callApi('/caption/multi', {
-        caption,
-        tags
-      }, 'POST')
-      if(res){
-        dispatch({
-          type: CREATE_CAPTION,
-          payload: caption
-        })
-      }
+    const { ethereum } = window;
+    console.log("Trying to call totalWaves")
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const wavePortalContract = new ethers.Contract(contractAddress, abi.abi, signer);
+
+      let count = await wavePortalContract.totalWaves();
+      console.log("Retrieved total wave count...", count.toNumber());
+      return count.toNumber();
     } else {
-      res = await callApi('/caption', {
-        caption
-      }, 'POST')
-      if(res){
-        dispatch({
-          type: CREATE_CAPTION,
-          payload: caption
-        })
-      }
+      console.log("Ethereum object doesn't exist!");
     }
   } catch (error) {
     console.log(error)
-  } finally{
-    cb()
+  } finally {
+    cb && cb()
   }
 }
 
-export const getCaptions =  cb => async dispatch => {
+export const getCaptions = cb => async dispatch => {
   try {
-      const res = await callApi('/caption', null, 'GET')
-      
-      if(res && res.status === "success"){
-        const {data: {captions}} = res
-        dispatch({
-          type: GET_CAPTIONS,
-          payload: captions
-        })
-      }
-  } catch (error) {
-    console.log(error)
-  }finally{
-    cb()
-  }
-}
+    const res = await callApi('/caption', null, 'GET')
 
-export const getCaptionByTagId =  (id, cb) => async dispatch => {
-  try {
-      const res = await callApi(`/caption/withTag?tagId=${id}`, null, 'GET')
-      if(res && res.status === "success"){
-        const {data: {captions, tag}} = res
-        const newCaptions = captions.map((caption, i) => {
-          return {
-            id: i,
-            tag,
-            caption
-          }
-        })
-        dispatch({
-          type: ADD_CAPTIONS,
-          payload: newCaptions
-        })
-        dispatch({
-          type: ADD_TAG,
-          payload: tag
-        })
-      }
-  } catch (error) {
-    console.log(error)
-  }finally{
-    cb()
-  }
-}
-
-export const createCaptionAlone = (caption, cb) => async dispatch => {
-  try {
-    const res = await callApi(
-      "/caption",
-      {
-        caption
-      },
-      "POST"
-    );
-    if (res.status === "success") {
-      const {id, caption: newC} = res.data;
-      const newCaption = {
-          id,
-          caption: newC
-        }
+    if (res && res.status === "success") {
+      const { data: { captions } } = res
       dispatch({
-        type: CREATE_CAPTION,
-        payload: newCaption
-      });
+        type: GET_CAPTIONS,
+        payload: captions
+      })
     }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    cb()
+  }
+}
+
+export const sendWave = (caption, cb) => async dispatch => {
+  try {
+
   } catch (error) {
     console.log(error);
   } finally {

@@ -30,3 +30,10 @@ const runMain = async () => {
 };
 
 runMain();
+
+/**
+ * No need to generate any newer typings.
+Contracts deployed with account: 0xc83C48Eb5E08F9E346c14581e56436D752C177F1
+Account balance: 100000000000000000
+Wavecontract address: 0x39C50D5EF33b0871048a62a9FAa0aFF8F6c2fcA1
+ */

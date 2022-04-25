@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { func, array } from "prop-types";
 import {
   Container,
   SearchSection,
@@ -14,20 +13,25 @@ import {
 } from "../../components";
 import NavBar from "../../components/NavBar";
 import Loader from "../../components/Loader";
+import { sendWave } from "../../store/actions/caption.actions";
 
 const Home = props => {
-  const { captions, getSearchedCaptions } = props;
+  const { captions, connectWallet, currentAccount } = props;
   const [captionsLoading, setCaptionsLoading] = useState(false);
+  const [, setMessage] = useState("");
   return (
     <Container>
-      <NavBar />
+      <NavBar
+        connectWallet={connectWallet}
+        currentAccount={currentAccount}
+      />
       <SearchSection>
         <SearchWrapper>
-          <SearchInput placeholder="Add a message" />
+          <SearchInput onChange={e => setMessage(e.target.value)} placeholder="Add a message" />
           <SearchButton
             onClick={() => {
               setCaptionsLoading(true);
-              getSearchedCaptions(() => setCaptionsLoading(false));
+              sendWave(() => setCaptionsLoading(false));
             }}
           >
             {captionsLoading ? <Loader size="small" color="#fff" /> : "Send a wave"}
@@ -52,21 +56,6 @@ const Home = props => {
       </CaptionsContainer>
     </Container>
   );
-};
-
-Home.defaultProps = {
-  activeTags: [],
-  captions: {
-    tag: "",
-    caption: ""
-  },
-  getSearchedCaptions: () => { }
-};
-
-Home.propTypes = {
-  activeTags: array,
-  captions: array,
-  getSearchedCaptions: func
 };
 
 export default Home;
