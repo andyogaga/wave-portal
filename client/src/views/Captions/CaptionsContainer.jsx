@@ -9,11 +9,11 @@ const CaptionsContainer = props => {
   const [captionsLoading, setCaptionsLoading] = useState(true)
 
   useEffect(() => {
-    // getCaptions(() => setCaptionsLoading(false))
+    getCaptions(() => setCaptionsLoading(false))
     return () => {
       clearCaptions()
     };
-  }, [])
+  }, [clearCaptions, getCaptions])
 
   return (
     <Captions

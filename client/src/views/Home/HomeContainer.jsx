@@ -13,16 +13,14 @@ const HomeContainer = props => {
     getCaptionByTagId,
     activeCaptions,
     activeTags,
-    clearActiveTags,
     clearCaptions
   } = props;
 
   useEffect(() => {
     return () => {
-      clearActiveTags();
       clearCaptions();
     };
-  }, []);
+  }, [clearCaptions]);
 
   const getSearchedCaptions = cb => {
     // Choose a random number from 1 to 10
@@ -46,7 +44,6 @@ const mapStateToProps = state => ({
 HomeContainer.defaultProps = {
   getCaptionByTagId: () => { },
   getCaptions: () => { },
-  clearActiveTags: () => { },
   clearCaptions: () => { },
   activeCaptions: [],
   activeTags: []
@@ -55,7 +52,6 @@ HomeContainer.defaultProps = {
 HomeContainer.propTypes = {
   getCaptions: func,
   getCaptionByTagId: func,
-  clearActiveTags: func,
   clearCaptions: func,
   activeCaptions: array,
   activeTags: array
