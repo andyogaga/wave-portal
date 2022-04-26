@@ -30,11 +30,15 @@ const Home = props => {
           <SearchInput value={message} onChange={e => setMessage(e.target.value)} placeholder="Add a message" />
           <SearchButton
             onClick={() => {
-              setCaptionsLoading(true);
-              sendWave(message, (res) => {
-                setCaptionsLoading(false)
-                res && setMessage("")
-              });
+              if (currentAccount) {
+                setCaptionsLoading(true);
+                sendWave(message, (res) => {
+                  setCaptionsLoading(false)
+                  res && setMessage("")
+                });
+              } else {
+                alert("Wallet not connected, please connect")
+              }
             }}
           >
             {captionsLoading ? <Loader size="small" color="#fff" /> : "Send a wave"}

@@ -38,6 +38,7 @@ const HomeContainer = props => {
         setCurrentAccount(accounts[0])
       } else {
         console.log("No authorized account found")
+        connectWallet()
       }
     } catch (error) {
       console.log(error);
@@ -61,6 +62,7 @@ const HomeContainer = props => {
 
   useEffect(() => {
     checkIfWalletIsConnected()
+    // eslint-disable-next-line
   }, []);
 
   return (
