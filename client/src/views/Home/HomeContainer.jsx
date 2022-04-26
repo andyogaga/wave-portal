@@ -1,26 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
 import Home from "./Home";
 import {
-  getCaptions,
-  clearCaptions
+  getAllWaves,
 } from "../../store/actions/caption.actions";
-import { func, array } from "prop-types";
 
-const HomeContainer = props => {
-  const {
-    activeCaptions,
-    activeTags,
-    clearCaptions
-  } = props;
-
-  useEffect(() => {
-    return () => {
-      clearCaptions();
-    };
-  }, [clearCaptions]);
+const HomeContainer = () => {
 
   const [currentAccount, setCurrentAccount] = useState("");
+  const [waves, setWaves] = useState([]);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -65,36 +52,25 @@ const HomeContainer = props => {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (currentAccount) {
+      getAllWaves((waves) => {
+        if (waves) {
+          setWaves(waves)
+        }
+      })
+    }
+    // eslint-disable-next-line
+  }, [currentAccount]);
+
   return (
     <Home
-      captions={activeCaptions}
-      activeTags={activeTags}
       connectWallet={connectWallet}
       currentAccount={currentAccount}
+      waves={waves}
     />
   );
 };
 
-const mapStateToProps = state => ({
-  activeCaptions: state.captions.activeCaptions,
-});
 
-HomeContainer.defaultProps = {
-  getCaptionByTagId: () => { },
-  getCaptions: () => { },
-  clearCaptions: () => { },
-  activeCaptions: [],
-  activeTags: []
-}
-
-HomeContainer.propTypes = {
-  getCaptions: func,
-  clearCaptions: func,
-  activeCaptions: array,
-  activeTags: array
-}
-
-export default connect(mapStateToProps, {
-  getCaptions,
-  clearCaptions
-})(HomeContainer);
+export default HomeContainer;

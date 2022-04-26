@@ -235,24 +235,21 @@ export const CaptionCard = styled.div`
 export const CaptionText = styled.p`
   text-align: center;
   color: ${PRI_COLOR};
-  font-size: 1.3rem;
+  word-break: break-all;
+  font-size: 0.6rem;
   margin-block-start: 0rem;
-
-  &:first-letter {
-    color: #000;
-    text-transform: uppercase;
-    font-size: 2rem;
-    font-weight: bold;
-  }
 `;
 
 export const CaptionCardHeader = styled(CaptionText)`
   margin-block-end: 0rem;
+  margin-bottom: 1rem;
   color: rgba(0,0,0,0.9);
+  word-break: break-word;
+  font-size: 1.3rem;
   &:first-letter {
     text-transform: uppercase;
-    font-size: 1.3rem;
-    font-weight: normal;
+    font-size: 1.8rem;
+    font-weight: bold;
   }
 `;
 

@@ -16,7 +16,7 @@ import Loader from "../../components/Loader";
 import { sendWave } from "../../store/actions/caption.actions";
 
 const Home = props => {
-  const { captions, connectWallet, currentAccount } = props;
+  const { waves, connectWallet, currentAccount } = props;
   const [captionsLoading, setCaptionsLoading] = useState(false);
   const [message, setMessage] = useState("");
   return (
@@ -35,6 +35,7 @@ const Home = props => {
                 sendWave(message, (res) => {
                   setCaptionsLoading(false)
                   res && setMessage("")
+                  res && alert("Transaction sent successfully, please wait for confirmation")
                 });
               } else {
                 alert("Wallet not connected, please connect")
@@ -46,15 +47,12 @@ const Home = props => {
         </SearchWrapper>
       </SearchSection>
       <CaptionsContainer>
-        {Array.isArray(captions) && captions.length ? (
-          captions.map(caption => (
-            <CaptionCard key={caption.id}>
-              {caption.tag ? (
-                <CaptionCardHeader>{caption.tag}</CaptionCardHeader>
-              ) : null}
-              {caption.caption ? (
-                <CaptionText>{caption.caption}</CaptionText>
-              ) : null}
+        {Array.isArray(waves) && waves.length ? (
+          waves.map(wave => (
+            <CaptionCard key={wave.time}>
+              <CaptionText>{wave.time}</CaptionText>
+              <CaptionCardHeader>{wave.message}</CaptionCardHeader>
+              <CaptionText>Sender: {wave.address}</CaptionText>
             </CaptionCard>
           ))
         ) : (

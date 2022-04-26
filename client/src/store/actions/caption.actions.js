@@ -1,9 +1,8 @@
 import { ethers } from "ethers";
-import { callApi } from "../../utils"
-import { GET_CAPTIONS, CLEAR_CAPTIONS } from '../../utils/constants'
+import { CLEAR_CAPTIONS } from '../../utils/constants'
 import abi from "../../utils/WavePortal.json";
 
-const contractAddress = "0x39C50D5EF33b0871048a62a9FAa0aFF8F6c2fcA1";
+const contractAddress = "0xaCF5a2F5B1E06862d64223B0db23742d9F946229";
 
 export const getTotalWaves = async (cb) => {
   try {
@@ -26,16 +25,26 @@ export const getTotalWaves = async (cb) => {
   }
 }
 
-export const getCaptions = cb => async dispatch => {
+export const getAllWaves = async (cb) => {
   try {
-    const res = await callApi('/caption', null, 'GET')
+    const { ethereum } = window;
+    if (ethereum) {
+      console.log("Calling waves")
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const wavePortalContract = new ethers.Contract(contractAddress, abi.abi, signer);
 
-    if (res && res.status === "success") {
-      const { data: { captions } } = res
-      dispatch({
-        type: GET_CAPTIONS,
-        payload: captions
-      })
+      const waves = await wavePortalContract.getAllWaves();
+
+      const formattedWaves = waves.map(wave => ({
+        address: wave.sender,
+        time: (new Date(wave.key * 1000)).toDateString(),
+        message: wave.message,
+      }))
+      console.log(formattedWaves)
+      cb(formattedWaves)
+    } else {
+      console.log("Ethereum object doesn't exist!");
     }
   } catch (error) {
     console.log(error)
@@ -53,7 +62,8 @@ export const sendWave = async (caption, cb) => {
       const wavePortalContract = new ethers.Contract(contractAddress, abi.abi, signer);
 
       let waveTrx = await wavePortalContract.createWave(caption);
-      await waveTrx.wait();
+      console.log("Trx ID", waveTrx)
+      // await waveTrx.wait();
       await cb(1)
     } else {
       console.log("Ethereum object doesn't exist!");
