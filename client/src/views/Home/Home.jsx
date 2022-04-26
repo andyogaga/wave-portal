@@ -18,7 +18,7 @@ import { sendWave } from "../../store/actions/caption.actions";
 const Home = props => {
   const { captions, connectWallet, currentAccount } = props;
   const [captionsLoading, setCaptionsLoading] = useState(false);
-  const [, setMessage] = useState("");
+  const [message, setMessage] = useState("");
   return (
     <Container>
       <NavBar
@@ -27,11 +27,14 @@ const Home = props => {
       />
       <SearchSection>
         <SearchWrapper>
-          <SearchInput onChange={e => setMessage(e.target.value)} placeholder="Add a message" />
+          <SearchInput value={message} onChange={e => setMessage(e.target.value)} placeholder="Add a message" />
           <SearchButton
             onClick={() => {
               setCaptionsLoading(true);
-              sendWave(() => setCaptionsLoading(false));
+              sendWave(message, (res) => {
+                setCaptionsLoading(false)
+                res && setMessage("")
+              });
             }}
           >
             {captionsLoading ? <Loader size="small" color="#fff" /> : "Send a wave"}
