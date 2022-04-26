@@ -166,7 +166,7 @@ const NavBar = ({ connectWallet, currentAccount }) => {
 
   useEffect(() => {
     waveCount()
-  }, [])
+  }, [currentAccount])
 
 
   return (
