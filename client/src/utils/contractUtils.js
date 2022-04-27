@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import abi from "./WavePortal.json";
 
-const contractAddress = "0xCE8027E1441Be1B56462a09bFCa6d5Ac555A5dd9";
+const contractAddress = "0x2D7aF0C51ED7aBa1186dB2a1921c4abA6DAB0cF0";
 
 export const getContract = async () => {
     try {
