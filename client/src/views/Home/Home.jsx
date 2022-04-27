@@ -49,8 +49,8 @@ const Home = props => {
       </SearchSection>
       <CaptionsContainer>
         {Array.isArray(waves) && waves.length ? (
-          waves.map(wave => (
-            <CaptionCard key={wave.time}>
+          waves.map((wave, i) => (
+            <CaptionCard key={Date.now() + i}>
               <CaptionText>{wave.time}</CaptionText>
               <CaptionCardHeader>{wave.message}</CaptionCardHeader>
               <CaptionText>Sender: {wave.address}</CaptionText>
