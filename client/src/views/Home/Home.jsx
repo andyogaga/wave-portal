@@ -46,6 +46,7 @@ const Home = props => {
             {captionsLoading ? <Loader size="small" color="#fff" /> : "Send a wave"}
           </SearchButton>
         </SearchWrapper>
+        <CaptionText>Use Rinkeby testnet</CaptionText>
       </SearchSection>
       <CaptionsContainer>
         {Array.isArray(waves) && waves.length ? (
