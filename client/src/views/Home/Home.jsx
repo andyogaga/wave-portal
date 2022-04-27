@@ -13,12 +13,13 @@ import {
 } from "../../components";
 import NavBar from "../../components/NavBar";
 import Loader from "../../components/Loader";
-import { sendWave } from "../../store/actions/caption.actions";
+import { sendWave } from "../../utils/wave.actions";
 
 const Home = props => {
   const { waves, connectWallet, currentAccount } = props;
   const [captionsLoading, setCaptionsLoading] = useState(false);
   const [message, setMessage] = useState("");
+
   return (
     <Container>
       <NavBar

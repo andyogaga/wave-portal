@@ -1,31 +1,8 @@
 import React from "react";
-import { createBrowserHistory } from "history";
-import { Router } from "react-router-dom";
-import { PersistGate } from "redux-persist/integration/react";
-
-// import redux
-import { Provider } from "react-redux";
-import configureStore from "./configureStore";
-
-import Routes from "./routes";
-export const history = createBrowserHistory();
-const { store, persistor } = configureStore;
+import HomeContainer from "./views/Home/HomeContainer";
 
 const App = () => {
-
-
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <div>
-          <Router history={history}>
-            <Routes />
-          </Router>
-        </div>
-      </PersistGate>
-    </Provider>
-  );
-
+  return <HomeContainer />;
 }
 
 export default App;

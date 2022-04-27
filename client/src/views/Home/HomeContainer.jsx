@@ -1,13 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Home from "./Home";
 import {
   getAllWaves,
-} from "../../store/actions/caption.actions";
+} from "../../utils/wave.actions";
+import { getContract } from "../../utils/contractUtils";
 
 const HomeContainer = () => {
 
   const [currentAccount, setCurrentAccount] = useState("");
   const [waves, setWaves] = useState([]);
+
+  const waveListenerCallback = useCallback(
+    async () => {
+      const onNewWaveSubmitted = (from, date, _message) => {
+        setWaves(prev => [...prev, {
+          address: from,
+          time: (new Date(date * 1000)).toDateString(),
+          message: _message,
+        }
+        ]);
+      }
+      const wavesContract = await getContract();
+      wavesContract.on("WaveSubmitted", onNewWaveSubmitted);
+
+      return () => {
+        wavesContract.off("WaveSubmitted", onNewWaveSubmitted);
+      }
+    },
+    // eslint-disable-next-line
+    [],
+  )
+
+
+  useEffect(() => {
+    waveListenerCallback()
+    // eslint-disable-next-line
+  }, []);
 
   const checkIfWalletIsConnected = async () => {
     try {
